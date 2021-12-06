@@ -1,0 +1,14 @@
+{
+  "books": [
+    {
+      "name": "Dave Grohl",
+      "type": "Audio Book",
+      "link" : "<iframe style=\"width:120px;height:240px;\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" frameborder=\"0\" src=\"//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=boooklist30-20&language=en_US&marketplace=amazon&region=US&placement=B091WVM1JD&asins=B091WVM1JD&linkId=2ddb78062563819debd13d9a23bd3713&show_border=true&link_opens_in_new_window=true\"></iframe>"
+    },
+    {
+      "name": "The Midnight Library: A Novel",
+      "type": "Book",
+      "link" : "<iframe style=\"width:120px;height:240px;\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" frameborder=\"0\" src=\"//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=boooklist30-20&language=en_US&marketplace=amazon&region=US&placement=B085BVSXS9&asins=B085BVSXS9&linkId=6173cb28825b4d9213ab5e81f3f7006a&show_border=true&link_opens_in_new_window=true\"></iframe>"
+    }
+  ]
+}
