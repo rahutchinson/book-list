@@ -35,7 +35,6 @@ type indexParams struct {
 	Host string
 }
 
-
 func main() {
 	flag.Parse()
 
