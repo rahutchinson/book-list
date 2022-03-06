@@ -24,15 +24,16 @@ type books struct {
 }
 
 type book struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name        string `json:"name"`
+	Type        string `json:"type"`
 	Description string `json:"description"`
-	Link string `json:"link"`
+	Cover       string `json:"cover"`
+	Link        string `json:"link"`
 }
 
 type indexParams struct {
 	Books books
-	Host string
+	Host  string
 }
 
 func main() {
@@ -40,6 +41,8 @@ func main() {
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/books", bookHandler)
+	fs := http.FileServer(http.Dir("./js/"))
+	http.Handle("/js/", http.StripPrefix("/js", fs))
 
 	log.Print("Running at address ", *httpAddr)
 	log.Fatal(http.ListenAndServe(*httpAddr, nil))
@@ -53,7 +56,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 	params := indexParams{
 		Books: readBooks(),
-		Host: req.Host,
+		Host:  req.Host,
 	}
 	w.Header().Set("Cache-Control", "no-cache")
 	index.Execute(w, params)
@@ -64,7 +67,7 @@ func bookHandler(w http.ResponseWriter, req *http.Request) {
 	s := readBooks()
 	err := json.NewEncoder(w).Encode(s)
 	if err != nil {
-		return 
+		return
 	}
 }
 

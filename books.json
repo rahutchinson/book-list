@@ -3,20 +3,37 @@
     {
       "name": "Dave Grohl",
       "author": "Dave Grohl",
-      "type": "Audio Book",
-      "link" : "<iframe style=\"width:120px;height:240px;\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" frameborder=\"0\" src=\"//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=boooklist30-20&language=en_US&marketplace=amazon&region=US&placement=B091WVM1JD&asins=B091WVM1JD&linkId=2ddb78062563819debd13d9a23bd3713&show_border=true&link_opens_in_new_window=true\"></iframe>"
+      "type": "Audiobook",
+      "cover": "https://images-na.ssl-images-amazon.com/images/I/41WgN794RAL.jpg",
+      "link" : "https://amzn.to/3pGcHTt"
     },
     {
       "name": "The Midnight Library: A Novel",
       "author": "Matt Haig",
-      "type": "Audiobook",
-      "link" : "<iframe style=\"width:120px;height:240px;\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" frameborder=\"0\" src=\"//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=boooklist30-20&language=en_US&marketplace=amazon&region=US&placement=B085BVSXS9&asins=B085BVSXS9&linkId=6173cb28825b4d9213ab5e81f3f7006a&show_border=true&link_opens_in_new_window=true\"></iframe>"
+      "type": "Audiobook - Hardcover",
+      "cover": "https://images-na.ssl-images-amazon.com/images/I/41ATfFjhelL.jpg",
+      "link" : "https://amzn.to/35UzbJ3"
     },
     {
       "name": "Children of Time",
       "author": "Adrian Tchaikovsky",
-      "type": "Book",
-      "link" : "<iframe style=\"width:120px;height:240px;\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" frameborder=\"0\" src=\"//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=boooklist30-20&language=en_US&marketplace=amazon&region=US&placement=0316452505&asins=0316452505&linkId=cd127b23f4c20c2dbf88e6ec027970fb&show_border=true&link_opens_in_new_window=true\"></iframe>"
+      "type": "Paperback",
+      "cover": "https://images-na.ssl-images-amazon.com/images/I/51glJgVC1IL.jpg",
+      "link" : "https://amzn.to/3vJubCe"
+    },
+    {
+      "name": "Grit: The Power of Passion and Perseverance",
+      "author": "Angela Duckworth",
+      "type": "Audiobook",
+      "cover": "https://images-na.ssl-images-amazon.com/images/I/41u6Gt5MRsL.jpg",
+      "link" : "https://amzn.to/3hIK4Re"
+    },
+    {
+      "name": "Project Hail Mary: A Novel",
+      "author": "Andy Weir",
+      "type": "Hardcover",
+      "cover": "https://images-na.ssl-images-amazon.com/images/I/51T7PRuzilL.jpg",
+      "link" : "https://amzn.to/3pGDK0I"
     }
   ]
 }

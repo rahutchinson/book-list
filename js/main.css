@@ -1,0 +1,251 @@
+
+@import url(https://fonts.googleapis.com/css?family=Lato:300,400,700|Sacramento|Abril+Fatface|Six+Caps|Cardo:400italic,700);
+@font-face {
+	font-family: 'codropsicons';
+	src:url('../fonts/codropsicons/codropsicons.eot');
+	src:url('../fonts/codropsicons/codropsicons.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/codropsicons/codropsicons.woff') format('woff'),
+		url('../fonts/codropsicons/codropsicons.ttf') format('truetype'),
+		url('../fonts/codropsicons/codropsicons.svg#codropsicons') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+*, *:after, *:before {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+
+body {
+	font-family: 'Lato', Arial, sans-serif;
+	color: #64696a;
+	background: #fff;
+}
+
+a {
+	color: #ddd;
+	text-decoration: none;
+}
+
+a:hover, a:focus {
+	color: #fff;
+}
+
+html,
+body,
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.container.hide-overflow { overflow: hidden }
+
+.main {
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.bookshelf {
+    position: relative;
+    margin: 40px auto 0;
+    list-style: none;
+    text-align: center;
+}
+
+.bookshelf figure {
+    position: relative;
+    display: inline-block;
+    margin: 40px 0 0 0;
+    padding: 45px 0;
+    max-width: 75%;
+    width: 324px;
+    vertical-align: top;
+}
+
+/* Perspectiv wrapper, figure and book */
+
+.perspective {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    -webkit-perspective: 1800px;
+    perspective: 1800px;
+}
+
+.book {
+    position: relative;
+    margin: 0 auto;
+    width: 180px;
+    height: 272px;
+    color: transparent;
+    max-height: 300px;
+    -webkit-transform-style: preserve-3d;
+    box-shadow: 0 0 10px rgb(0 0 0 / 5%), 10px 2px 5px rgb(0 0 0 / 34%);
+    transform-style: preserve-3d;
+}
+
+.book div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.cover {
+    z-index: 10;
+    -webkit-transform-origin: 0% 50%;
+    transform-origin: 0% 50%;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.cover::before {
+    position: absolute;
+    left: 0;
+    z-index: 10;
+    visibility: hidden;
+    width: 20px;
+    height: 100%;
+    content: '';
+    -webkit-transform: translateX(-100%) rotateY(-90deg);
+    transform: translateX(-100%) rotateY(-90deg);
+    -webkit-transform-origin: 100% 50%;
+    transform-origin: 100% 50%;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.front {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    overflow: hidden;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* flex-wrap: nowrap; */
+}
+
+.front img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.inner {
+    border-width: 3px;
+    border-style: solid;
+    background-color: #fff;
+}
+
+.bookshelf .book .inner-left {
+    border-right: none;
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
+.buttons {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.buttons a {
+    display: inline-block;
+    padding: 0 8px;
+    color: rgba(100, 105, 106, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.65em;
+    line-height: 1.5;
+}
+
+.buttons a:first-child:not(:only-child) { border-right: 1px solid rgba(100, 105, 106, 0.3) }
+
+.buttons a:hover,
+.buttons a:active { color: #64696a }
+
+
+.bookshelf figcaption {
+    position: relative;
+    top: 100%;
+    padding: 0 2em;
+    text-align: center;
+}
+
+.bookshelf figcaption h2 {
+    margin: 1em 0 0 0;
+    font-weight: 300;
+    font-size: 1.8em;
+    font-family: "Abril Fatface", serif;
+}
+
+.bookshelf figcaption h2 span {
+    position: relative;
+    display: block;
+    margin: 1em 0 0 0;
+    padding: 1em 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+    font-size: 0.4em;
+    font-family: "Lato", sans-serif;
+}
+
+@font-face {
+    font-family: 'Abril Fatface';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Abril Fatface'), local('AbrilFatface-Regular'), url(http://themes.googleusercontent.com/static/fonts/abrilfatface/v6/X1g_KwGeBV3ajZIXQ9VnDokaQb-UsZVONjobs91YQtw.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Cardo';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Cardo Bold'), local('Cardo-Bold'), url(http://themes.googleusercontent.com/static/fonts/cardo/v6/gHC1KgRPdVNdvvVcxLMCY3YhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Cardo';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Cardo Italic'), local('Cardo-Italic'), url(http://themes.googleusercontent.com/static/fonts/cardo/v6/mSKSxAIybPTfRoik7xAeTQLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Lato Light'), local('Lato-Light'), url(http://themes.googleusercontent.com/static/fonts/lato/v7/kcf5uOXucLcbFOydGU24WALUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(http://themes.googleusercontent.com/static/fonts/lato/v7/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(http://themes.googleusercontent.com/static/fonts/lato/v7/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Sacramento';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Sacramento'), local('Sacramento-Regular'), url(http://themes.googleusercontent.com/static/fonts/sacramento/v2/WFDkXpubrEwopJnSlHV6CL3hpw3pgy2gAi-Ip7WPMi0.woff) format('woff');
+  }
+  @font-face {
+    font-family: 'Six Caps';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Six Caps'), local('SixCaps'), url(http://themes.googleusercontent.com/static/fonts/sixcaps/v5/tMrhQDUBAHnnGuM33-yobHYhjbSpvc47ee6xR_80Hnw.woff) format('woff');
+  }
