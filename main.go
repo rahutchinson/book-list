@@ -36,8 +36,7 @@ type book struct {
 }
 
 type indexParams struct {
-	Books books
-	Host  string
+	Host string
 }
 
 type postBook struct {
@@ -58,27 +57,26 @@ func main() {
 }
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		params := indexParams{
-			Books: readBooks(),
-			Host:  req.Host,
-		}
-		w.Header().Set("Cache-Control", "no-cache")
-		index.Execute(w, params)
-	case http.MethodPost:
-	case http.MethodPut:
-		// Update an existing record.
-	case http.MethodDelete:
-		// Remove the record.
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	if req.URL.Path != "/" {
+		http.NotFound(w, req)
+		return
 	}
+	params := indexParams{
+		Host: req.Host,
+	}
+	w.Header().Set("Cache-Control", "no-cache")
+	index.Execute(w, params)
 }
 
 func bookHandler(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
+		w.Header().Set("Content-Type", "application/json")
+		s := readBooks()
+		err := json.NewEncoder(w).Encode(s)
+		if err != nil {
+			return
+		}
 	case http.MethodPost:
 		var b postBook
 		err := json.NewDecoder(req.Body).Decode(&b)
@@ -144,6 +142,7 @@ func readBooks() books {
 
 	err = json.Unmarshal(byteValue, &allbooks)
 	if err != nil {
+		fmt.Println("error")
 		return books{}
 	}
 	return allbooks
