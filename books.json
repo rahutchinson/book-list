@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "books": [
     {
       "name": "Dave Grohl",
@@ -86,3 +87,18 @@
     }
   ]
 }
+=======
+ "books": [
+  {
+   "isbn": "9780765382030",
+   "name": "The Three-Body Problem",
+   "author": "Cixin Liu",
+   "type": "Paperback",
+   "description": "One of the best Books/Series I have read.",
+   "cover": "https://images-na.ssl-images-amazon.com/images/I/51hshl7LRTL.jpg",
+   "genre": "Sci-Fi",
+   "tags": "best series",
+   "link": "https://amzn.to/3IMuyzv"
+  }
+ ]}
+>>>>>>> ed031b8 (added post to it)
