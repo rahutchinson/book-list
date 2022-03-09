@@ -1,22 +1,26 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"text/template"
 	"time"
+
+	"github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgx"
+	"github.com/jackc/pgx/v4"
 )
 
 var (
-	httpAddr = flag.String("http", defaultAddr(), "http listen address")
-	postKey  = os.Getenv("POST_KEY")
-	index    *template.Template
+	httpAddr     = flag.String("http", defaultAddr(), "http listen address")
+	postKey      = os.Getenv("POST_KEY")
+	dbConnection = os.Getenv("DB_CON_STRING")
+	index        *template.Template
 )
 
 type books struct {
@@ -44,7 +48,21 @@ type postBook struct {
 	Key  string
 }
 
+var dbConn *pgx.Conn
+
 func main() {
+	config, err := pgx.ParseConfig(os.ExpandEnv(dbConnection))
+	config.Database = "defaultdb"
+	if err != nil {
+		log.Fatal("error configuring the database: ", err)
+	}
+	conn, err := pgx.ConnectConfig(context.Background(), config)
+	if err != nil {
+		log.Fatal("error connecting to the database: ", err)
+	}
+	dbConn = conn
+	readRows(dbConn)
+
 	flag.Parse()
 
 	http.HandleFunc("/", indexHandler)
@@ -54,6 +72,33 @@ func main() {
 
 	log.Print("Running at address ", *httpAddr)
 	log.Fatal(http.ListenAndServe(*httpAddr, nil))
+}
+
+func readRows(conn *pgx.Conn) books {
+	rows, err := conn.Query(context.Background(), "SELECT isbn, name, author, type, description, cover, genre, tags, link FROM books")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var bS books
+	defer rows.Close()
+	for rows.Next() {
+		var book book
+		if err := rows.Scan(&book.ISBN, &book.Name, &book.Author, &book.Type, &book.Description, &book.Cover, &book.Genre, &book.Tags, &book.Link); err != nil {
+			fmt.Println(err)
+		}
+		bS.Books = append(bS.Books, book)
+	}
+	return bS
+}
+
+func insertRows(ctx context.Context, tx pgx.Tx, bookToAdd book) error {
+	// Insert four rows into the "accounts" table.
+	log.Println("Creating new rows...")
+	if _, err := tx.Exec(ctx,
+		"INSERT INTO public.books (isbn, name, author, type, description, cover, genre, tags, link) VALUES ($1, $2, $3, $4,$5, $6, $7, $8, $9)", bookToAdd.ISBN, bookToAdd.Name, bookToAdd.Author, bookToAdd.Type, bookToAdd.Description, bookToAdd.Cover, bookToAdd.Genre, bookToAdd.Tags, bookToAdd.Link); err != nil {
+		return err
+	}
+	return nil
 }
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
@@ -72,7 +117,7 @@ func bookHandler(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		w.Header().Set("Content-Type", "application/json")
-		s := readBooks()
+		s := readRows(dbConn)
 		err := json.NewEncoder(w).Encode(s)
 		if err != nil {
 			return
@@ -105,47 +150,15 @@ func addToBook(b book) bool {
 	if b.ISBN == "" || b.Link == "" || b.Name == "" {
 		return false
 	}
-	exsistingBooks := readBooks().Books
-
-	var repeat bool
-	for _, book := range exsistingBooks {
-		repeat = b.ISBN == book.ISBN
+	err := crdbpgx.ExecuteTx(context.Background(), dbConn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		return insertRows(context.Background(), tx, b)
+	})
+	if err == nil {
+		log.Println("New rows created.")
+	} else {
+		log.Fatal("error: ", err)
 	}
-	if repeat {
-		return false
-	}
-	booksToWrite := append(exsistingBooks, b)
-	writeBooks(books{Books: booksToWrite})
-	fmt.Println("write to file")
 	return true
-}
-
-func writeBooks(toWrite books) {
-	file, _ := json.MarshalIndent(toWrite, "", " ")
-	_ = ioutil.WriteFile("books.json", file, 0644)
-}
-
-func readBooks() books {
-	// Open our jsonFile
-	jsonFile, err := os.Open("./books.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("Successfully Opened books.json")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var allbooks books
-
-	err = json.Unmarshal(byteValue, &allbooks)
-	if err != nil {
-		fmt.Println("error")
-		return books{}
-	}
-	return allbooks
 }
 
 func defaultAddr() string {
