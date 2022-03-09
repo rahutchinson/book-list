@@ -1,6 +1,7 @@
 module github.com/rahutchinson/book-list
 
-go 1.13
+// +heroku goVersion go1.17
+go 1.17
 
 require github.com/cockroachdb/cockroach-go/v2 v2.2.8
 
