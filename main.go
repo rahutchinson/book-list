@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -14,6 +13,9 @@ import (
 
 	"github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgx"
 	"github.com/jackc/pgx/v4"
+
+	models "github.com/rahutchinson/book-list/models"
+	services "github.com/rahutchinson/book-list/services"
 )
 
 var (
@@ -22,31 +24,6 @@ var (
 	dbConnection = os.Getenv("DB_CON_STRING")
 	index        *template.Template
 )
-
-type books struct {
-	Books []book `json:"books"`
-}
-
-type book struct {
-	ISBN        string `json:"isbn"`
-	Name        string `json:"name"`
-	Author      string `json:"author"`
-	Type        string `json:"type"`
-	Description string `json:"description"`
-	Cover       string `json:"cover"`
-	Genre       string `json:"genre"`
-	Tags        string `json:"tags"`
-	Link        string `json:"link"`
-}
-
-type indexParams struct {
-	Host string
-}
-
-type postBook struct {
-	Book book
-	Key  string
-}
 
 var dbConn *pgx.Conn
 
@@ -61,12 +38,13 @@ func main() {
 		log.Fatal("error connecting to the database: ", err)
 	}
 	dbConn = conn
-	readRows(dbConn)
+	services.ReadBookRows(dbConn)
 
 	flag.Parse()
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/books", bookHandler)
+	http.HandleFunc("/featured", featuredHandler)
 	fs := http.FileServer(http.Dir("./js/"))
 	http.Handle("/js/", http.StripPrefix("/js", fs))
 
@@ -74,24 +52,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(*httpAddr, nil))
 }
 
-func readRows(conn *pgx.Conn) books {
-	rows, err := conn.Query(context.Background(), "SELECT isbn, name, author, type, description, cover, genre, tags, link FROM books")
-	if err != nil {
-		log.Fatal(err)
-	}
-	var bS books
-	defer rows.Close()
-	for rows.Next() {
-		var book book
-		if err := rows.Scan(&book.ISBN, &book.Name, &book.Author, &book.Type, &book.Description, &book.Cover, &book.Genre, &book.Tags, &book.Link); err != nil {
-			fmt.Println(err)
-		}
-		bS.Books = append(bS.Books, book)
-	}
-	return bS
-}
-
-func insertRows(ctx context.Context, tx pgx.Tx, bookToAdd book) error {
+func insertRows(ctx context.Context, tx pgx.Tx, bookToAdd models.Book) error {
 	// Insert four rows into the "accounts" table.
 	log.Println("Creating new rows...")
 	if _, err := tx.Exec(ctx,
@@ -106,24 +67,38 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		http.NotFound(w, req)
 		return
 	}
-	params := indexParams{
+	params := models.IndexParams{
 		Host: req.Host,
 	}
 	w.Header().Set("Cache-Control", "no-cache")
 	index.Execute(w, params)
 }
 
+func featuredHandler(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPut:
+		w.Header().Set("Content-Type", "application/json")
+		s := services.ReadRowsFeatured(dbConn)
+		err := json.NewEncoder(w).Encode(s)
+		if err != nil {
+			return
+		}
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
 func bookHandler(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		w.Header().Set("Content-Type", "application/json")
-		s := readRows(dbConn)
+		s := services.ReadBookRows(dbConn)
 		err := json.NewEncoder(w).Encode(s)
 		if err != nil {
 			return
 		}
 	case http.MethodPost:
-		var b postBook
+		var b models.PostBook
 		err := json.NewDecoder(req.Body).Decode(&b)
 		if err != nil {
 			http.Error(w, "Bad POST", 400)
@@ -146,7 +121,7 @@ func bookHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func addToBook(b book) bool {
+func addToBook(b models.Book) bool {
 	if b.ISBN == "" || b.Link == "" || b.Name == "" {
 		return false
 	}
