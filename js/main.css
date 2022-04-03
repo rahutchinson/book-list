@@ -154,6 +154,10 @@ body {
     transform: rotateY(180deg);
 }
 
+.featured {
+    background-color: bisque;
+}
+
 .buttons {
     margin-top: 5px;
     text-align: center;

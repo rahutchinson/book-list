@@ -1,0 +1,16 @@
+CREATE TABLE books (
+    isbn STRING PRIMARY KEY,
+    name STRING,
+    author STRING,
+    type STRING,
+    description STRING,
+    cover STRING,
+    genre STRING,
+    tags STRING,
+    link STRING
+);
+
+CREATE TABLE featured (
+    isbn STRING PRIMARY KEY,
+    current BOOLEAN
+);
