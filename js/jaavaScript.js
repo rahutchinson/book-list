@@ -1,16 +1,25 @@
-$(document).ready(function() {
+$(document).ready(function () {
     function getBooks() {
-        $.getJSON('/books', function(data) {
-            var list = document.querySelector('#bookList');
-            $.each(data.books, function(key, value) {
-            list.appendChild(buildBook(value))
-        });
-            
+        var listOfFeatured
+        $.getJSON('/featured', function (data) {
+            listOfFeatured = data
+        }).done(function() {
+            $.getJSON('/books', function (data) {
+                var list = document.querySelector('#bookList');
+                var fList = document.querySelector('#featuredList');
+                
+                $.each(data.books, function (key, value) {
+                    if(listOfFeatured.includes(value.isbn)) {
+                        fList.appendChild(buildBook(value))
+                    } else {
+                        list.appendChild(buildBook(value))
+                    }
+                });
+            }); 
         });
     }
     getBooks();
 });
-
 
 
 function buildBook(value) {

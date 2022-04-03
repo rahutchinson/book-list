@@ -33,3 +33,8 @@ type PostBook struct {
 	Book Book
 	Key  string
 }
+
+type PostFeatured struct {
+	FeaturedBook FeaturedBook
+	Key          string
+}
