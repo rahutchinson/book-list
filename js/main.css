@@ -193,6 +193,10 @@ body {
     font-family: "Abril Fatface", serif;
 }
 
+.buy {
+    text-decoration: underline;
+}
+
 .bookshelf figcaption h2 span {
     position: relative;
     display: block;
