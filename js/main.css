@@ -16,7 +16,7 @@
 body {
 	font-family: 'Lato', Arial, sans-serif;
 	color: #64696a;
-	background: #fff;
+	background: #CAA472;
 }
 
 a {
@@ -63,7 +63,7 @@ body {
     position: relative;
     display: inline-block;
     margin: 40px 0 0 0;
-    padding: 45px 0;
+    padding: 20px 0;
     max-width: 75%;
     width: 324px;
     vertical-align: top;
@@ -154,8 +154,14 @@ body {
     transform: rotateY(180deg);
 }
 
+.bookshelf featured figure {
+	margin: 0 0 0 0;
+}
+
 .featured {
-    background-color: bisque;
+	width: fit-content;
+	border-radius: 50px;
+    background-color: #055160;
 }
 
 .buttons {
@@ -166,7 +172,7 @@ body {
 .buttons a {
     display: inline-block;
     padding: 0 8px;
-    color: rgba(100, 105, 106, 0.7);
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 0.65em;
