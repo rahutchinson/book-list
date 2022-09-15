@@ -132,7 +132,18 @@ func bookHandler(w http.ResponseWriter, req *http.Request) {
 	case http.MethodPut:
 		// Update an existing record.
 	case http.MethodDelete:
-		// Remove the record.
+		var b models.PostBook
+		err := json.NewDecoder(req.Body).Decode(&b)
+		if err != nil {
+			http.Error(w, "Bad Delete", 400)
+		}
+		if b.Key == postKey {
+			err := services.DeleteBook(b.Book, dbConn)
+			if !err {
+				http.Error(w, "failed to delete", 400)
+			}
+		}
+
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
