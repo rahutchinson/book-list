@@ -43,6 +43,22 @@ func AddToBook(b models.Book, dbConn *pgx.Conn) bool {
 	return true
 }
 
+
+func DeleteBook(b models.Book, dbConn *pgx.Conn) bool {
+	if b.ISBN == "" || b.Link == "" || b.Name == "" {
+		return false
+	}
+	err := crdbpgx.ExecuteTx(context.Background(), dbConn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		return deleteBook(context.Background(), tx, b)
+	})
+	if err == nil {
+		log.Println("Book delete")
+	} else {
+		log.Fatal("error: ", err)
+	}
+	return true
+}
+
 func AddToFeatured(b models.FeaturedBook, dbConn *pgx.Conn) bool {
 	if b.ISBN == "" {
 		return false
@@ -82,6 +98,14 @@ func insertRowsBooks(ctx context.Context, tx pgx.Tx, bookToAdd models.Book) erro
 		"INSERT INTO public.books (isbn, name, author, type, description, cover, genre, tags, link) VALUES ($1, $2, $3, $4,$5, $6, $7, $8, $9)", bookToAdd.ISBN, bookToAdd.Name, bookToAdd.Author, bookToAdd.Type, bookToAdd.Description, bookToAdd.Cover, bookToAdd.Genre, bookToAdd.Tags, bookToAdd.Link); err != nil {
 		return err
 	}
+	return nil
+}
+
+func deleteBook(ctx context.Context, tx pgx.Tx, bookToDelete models.Book) error {
+	if _, err := tx.Exec(ctx,
+		"DELETE FROM public.books WHERE isbn = $1;", bookToDelete.ISBN); err != nil {
+			return err
+		}
 	return nil
 }
 
