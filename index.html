@@ -2,60 +2,436 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <title>Virtual Bookshelf - All My Books in One Place</title>
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/js/main.css">
-
-    <title>Ryan's bookshelf</title>
 </head>
 
 <body>
-    <h1 style="padding: 10px;">Books on <a href="https://www.linkedin.com/in/ryahutchinson/" target="_blank">my</a> bookshelf</h1>
-
-    <div class="container-fluid">
-        
-        <div id="featuredList" class="bookshelf featured">
-            <h2>Current</h2>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-book-open me-2"></i>
+                Virtual Bookshelf
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-view="bookshelf">
+                            <i class="fas fa-books me-1"></i>Bookshelf
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="stats">
+                            <i class="fas fa-chart-bar me-1"></i>Statistics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="add">
+                            <i class="fas fa-plus me-1"></i>Add Book
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-light btn-sm" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div id="bookList" class="bookshelf">
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Statistics View -->
+        <div id="statsView" class="view-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2>
+                        <i class="fas fa-chart-bar me-2"></i>Reading Statistics
+                    </h2>
+                </div>
+            </div>
+            <div class="row" id="statsContent">
+                <!-- Stats will be populated here -->
+            </div>
         </div>
 
-
-        <template id="bookrow">
-            <figure>
-                <div class="perspective">
-                    <div class="book" data-book="book-1">
-                        <div class="cover">
-                            <div class="front">
-                                <img id="cover" src="">
+        <!-- Add Book View -->
+        <div id="addView" class="view-section" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h2>
+                        <i class="fas fa-plus me-2"></i>Add New Book
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <form id="addBookForm">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="bookTitle" class="form-label">Title *</label>
+                                <input type="text" class="form-control" id="bookTitle" required>
                             </div>
-                            <div class="inner inner-left"></div>
+                            <div class="col-md-4">
+                                <label for="bookAuthor" class="form-label">Author *</label>
+                                <input type="text" class="form-control" id="bookAuthor" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="bookISBN" class="form-label">ISBN</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="bookISBN" placeholder="Enter ISBN to auto-fill details">
+                                    <button class="btn btn-outline-secondary" type="button" id="lookupISBN">
+                                        <i class="fas fa-search"></i> Lookup
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Enter ISBN to automatically populate book details</small>
+                            </div>
                         </div>
-                        <div class="inner inner-right"></div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="bookType" class="form-label">Type(s)</label>
+                                <select class="form-select" id="bookType" multiple>
+                                    <option value="physical">Physical Book</option>
+                                    <option value="kindle">Kindle</option>
+                                    <option value="audible">Audible</option>
+                                    <option value="ebook">E-Book</option>
+                                </select>
+                                <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple types</small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="bookStatus" class="form-label">Status</label>
+                                <select class="form-select" id="bookStatus">
+                                    <option value="unread">Unread</option>
+                                    <option value="reading">Currently Reading</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="abandoned">Abandoned</option>
+                                    <option value="want_to_read">Want to Read</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="bookRating" class="form-label">Rating</label>
+                                <select class="form-select" id="bookRating">
+                                    <option value="0">No Rating</option>
+                                    <option value="1">1 Star</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="5">5 Stars</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="bookGenre" class="form-label">Genre</label>
+                                <input type="text" class="form-control" id="bookGenre">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="bookPages" class="form-label">Pages</label>
+                                <input type="number" class="form-control" id="bookPages">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="bookCover" class="form-label">Cover URL</label>
+                                <input type="url" class="form-control" id="bookCover">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="bookLink" class="form-label">Purchase Link</label>
+                                <input type="url" class="form-control" id="bookLink">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="bookDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="bookDescription" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="bookNotes" class="form-label">Personal Notes</label>
+                                <textarea class="form-control" id="bookNotes" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Add Book
+                        </button>
+                    </form>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-info-circle me-2"></i>Tips
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Fill in as much information as you can</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Use the cover URL for a nice visual</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Add personal notes to remember your thoughts</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Update the status as you progress</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="buttons"><a href="#" class="buy" id="link" target="_blank">Buy</a><a id="type" href="#"
-                        target="_blank">Details</a></div>
-                        <div id="author"></div>
-                <figcaption>
-                    <h2 id="title"></h2>
-                </figcaption>
-            </figure>
-        </template>
+            </div>
+        </div>
+
+        <!-- Bookshelf View -->
+        <div id="bookshelfView" class="view-section">
+            <!-- Filters -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-filter me-2"></i>Filters
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search books...">
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <select class="form-select" id="typeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="physical">Physical</option>
+                                        <option value="kindle">Kindle</option>
+                                        <option value="audible">Audible</option>
+                                        <option value="ebook">E-Book</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <select class="form-select" id="statusFilter">
+                                        <option value="">All Status</option>
+                                        <option value="unread">Unread</option>
+                                        <option value="reading">Reading</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="abandoned">Abandoned</option>
+                                        <option value="want_to_read">Want to Read</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <select class="form-select" id="ratingFilter">
+                                        <option value="0">All Ratings</option>
+                                        <option value="5">5 Stars</option>
+                                        <option value="4">4+ Stars</option>
+                                        <option value="3">3+ Stars</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-secondary" id="clearFilters">
+                                        <i class="fas fa-times me-1"></i>Clear Filters
+                                    </button>
+                                    <button class="btn btn-primary" id="applyFilters">
+                                        <i class="fas fa-search me-1"></i>Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Currently Reading Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div id="currentlyReading" class="bookshelf featured">
+                        <div class="bookshelf-shelf">
+                            <!-- Currently reading books will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Books Section -->
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <i class="fas fa-books me-2"></i>My Library
+                    </h3>
+                    <div id="bookList" class="bookshelf">
+                        <div class="bookshelf-shelf">
+                            <!-- All books will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Template -->
+    <template id="bookTemplate">
+        <figure class="book-item">
+            <div class="perspective">
+                <div class="book" data-book="book-1">
+                    <div class="cover">
+                        <div class="front">
+                            <img class="book-cover" src="">
+                        </div>
+                        <div class="inner inner-left"></div>
+                    </div>
+                    <div class="inner inner-right"></div>
+                </div>
+            </div>
+            <div class="book-info">
+                <div class="book-actions">
+                    <button class="btn btn-sm btn-outline-primary edit-book">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-book">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="book-meta">
+                    <span class="book-type"></span>
+                    <span class="book-status"></span>
+                    <div class="book-rating"></div>
+                </div>
+                <div class="book-details">
+                    <h4 class="book-title"></h4>
+                    <p class="book-author"></p>
+                    <p class="book-genre"></p>
+                </div>
+            </div>
+        </figure>
+    </template>
+
+    <!-- Edit Book Modal -->
+    <div class="modal fade" id="editBookModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>Edit Book
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <input type="hidden" id="editBookId">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="editBookTitle" class="form-label">Title *</label>
+                                <input type="text" class="form-control" id="editBookTitle" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editBookAuthor" class="form-label">Author *</label>
+                                <input type="text" class="form-control" id="editBookAuthor" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editBookISBN" class="form-label">ISBN</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="editBookISBN" placeholder="Enter ISBN to auto-fill details">
+                                    <button class="btn btn-outline-secondary" type="button" id="editLookupISBN">
+                                        <i class="fas fa-search"></i> Lookup
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Enter ISBN to automatically populate book details</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="editBookType" class="form-label">Type(s)</label>
+                                <select class="form-select" id="editBookType" multiple>
+                                    <option value="physical">Physical Book</option>
+                                    <option value="kindle">Kindle</option>
+                                    <option value="audible">Audible</option>
+                                    <option value="ebook">E-Book</option>
+                                </select>
+                                <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple types</small>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editBookStatus" class="form-label">Status</label>
+                                <select class="form-select" id="editBookStatus">
+                                    <option value="unread">Unread</option>
+                                    <option value="reading">Currently Reading</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="abandoned">Abandoned</option>
+                                    <option value="want_to_read">Want to Read</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editBookRating" class="form-label">Rating</label>
+                                <select class="form-select" id="editBookRating">
+                                    <option value="0">No Rating</option>
+                                    <option value="1">1 Star</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="5">5 Stars</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="editBookGenre" class="form-label">Genre</label>
+                                <input type="text" class="form-control" id="editBookGenre">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editBookPages" class="form-label">Pages</label>
+                                <input type="number" class="form-control" id="editBookPages">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="editBookCover" class="form-label">Cover URL</label>
+                                <input type="url" class="form-control" id="editBookCover">
+                                <div class="mt-2">
+                                    <small class="text-muted">Preview:</small>
+                                    <div class="mt-1">
+                                        <img id="editBookCoverPreview" src="" alt="Cover preview" style="max-width: 100px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px; display: none;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editBookLink" class="form-label">Purchase Link</label>
+                                <input type="url" class="form-control" id="editBookLink">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="editBookDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="editBookDescription" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="editBookNotes" class="form-label">Personal Notes</label>
+                                <textarea class="form-control" id="editBookNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="resetBookChanges">
+                        <i class="fas fa-undo me-1"></i>Reset to Original
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" form="editBookForm">
+                        <i class="fas fa-save me-1"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
 </body>
-
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="/js/jaavaScript.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-
-
-
 
 </html>
