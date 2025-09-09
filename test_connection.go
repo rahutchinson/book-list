@@ -10,7 +10,6 @@ import (
 
 func main() {
 	// Test connection string - try different SSL modes
-	dsn := "postgresql://script:vBbmP0zJJQsz5Q_0Qzdymw@loyal-efreet-5669.5xj.gcp-us-central1.cockroachlabs.cloud:26257/defaultdb?sslmode=require"
 	
 	fmt.Println("Attempting to connect to CockroachDB...")
 	fmt.Printf("Connection string: %s\n", dsn)
